@@ -121,6 +121,9 @@ services:
     environment:
       BASE_URL: ${WP_URL:-http://localhost:8080}
       CI: "1"
+      # Used by the admin-experience spec to sign in to wp-admin.
+      WP_ADMIN_USER: ${WP_ADMIN_USER:-admin}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:-}
     volumes:
       - ./tests/e2e:/e2e
     working_dir: /e2e

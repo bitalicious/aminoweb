@@ -5,6 +5,7 @@
 #   scripts/test.sh              run every suite
 #   scripts/test.sh php          PHP syntax check across the theme
 #   scripts/test.sh catalog      WooCommerce catalog verification (prices, SKUs, media)
+#   scripts/test.sh store        WordPress/WooCommerce configuration verification
 #   scripts/test.sh e2e          Playwright browser flows
 #   scripts/test.sh e2e --grep checkout
 #   scripts/test.sh http         HTTP smoke test of every route
@@ -64,6 +65,18 @@ suite_catalog() {
     ok "catalog"
   else
     bad "catalog"
+  fi
+}
+
+# ---------------------------------------------------------------------------
+# Store configuration verification
+# ---------------------------------------------------------------------------
+suite_store() {
+  log "WordPress / WooCommerce configuration verification"
+  if ./scripts/wp.sh eval-file /tests/wp/verify-store.php 2>&1 | grep -v -E "Container|Healthy|Waiting|Running|^$"; then
+    ok "store"
+  else
+    bad "store"
   fi
 }
 
@@ -130,6 +143,10 @@ suite_http() {
 # ---------------------------------------------------------------------------
 suite_e2e() {
   log "Playwright browser flows"
+  # Start from a clean output directory so nothing from an earlier run (or an
+  # interrupted one) can interfere.
+  rm -rf tests/e2e/test-results 2>/dev/null || true
+
   if docker compose run --rm e2e "$@"; then
     ok "e2e"
   else
@@ -146,12 +163,14 @@ shift || true
 case "$TARGET" in
   php)     suite_php ;;
   catalog) require_env; suite_catalog ;;
+  store)   require_env; suite_store ;;
   http)    suite_http ;;
   e2e)     require_env; suite_e2e "$@" ;;
   all)
     require_env
     suite_php
     suite_catalog
+    suite_store
     suite_http
     suite_e2e "$@"
     ;;
@@ -161,7 +180,7 @@ case "$TARGET" in
     ;;
   *)
     echo "unknown suite: $TARGET" >&2
-    echo "use: php | catalog | http | e2e | all" >&2
+    echo "use: php | catalog | store | http | e2e | all" >&2
     exit 2
     ;;
 esac

@@ -302,6 +302,7 @@ newsletter endpoint · 21+ gate on/off · footer newsletter on/off.
 scripts/test.sh              # everything
 scripts/test.sh php          # PHP syntax check (37 files)
 scripts/test.sh catalog      # 691 assertions over products, variations, prices, media
+scripts/test.sh store        # 45 assertions over the WordPress/WooCommerce configuration
 scripts/test.sh http         # 19-route HTTP smoke test, asserts no PHP errors
 scripts/test.sh e2e          # Playwright browser flows
 scripts/test.sh e2e --grep checkout
@@ -315,6 +316,14 @@ scripts/test.sh e2e --grep checkout
   assignment, attribute options and variation flags, and for all 63 variations
   the regular/sale/active price, stock, SKU and image. Also verifies every media
   import and category hierarchy.
+* **Store verification** (`tests/wp/verify-store.php`) — 45 assertions covering
+  the specified configuration: USD with the right decimals and separators, US
+  selling/shipping, `en_US`, the store timezone, taxes off with **no** tax rates,
+  BACS and COD enabled with no online gateway, a United States flat-rate shipping
+  zone with a numeric cost, the WooCommerce pages existing and using the classic
+  shortcodes, the terms page assignment, permalinks, all three menus and their
+  exact items, the static front page, store visibility, guest checkout, the
+  active theme (and that it is not a child theme), and the site icon.
 * **HTTP smoke test** — homepage, shop (both pages), products, category
   archives, all content pages, cart, account, search, sitemap, 404, plus the
   empty-cart checkout redirect.
@@ -337,7 +346,12 @@ scripts/test.sh e2e --grep checkout
   * content pages: Quality/COAs, About, Contact, Research Use & Terms, search,
     404, footer, newsletter validation
   * responsive: 9 breakpoints × 8 routes asserting no horizontal overflow, grid
-    columns per breakpoint, mobile nav behaviour, and the gate at 320 px
+    columns per breakpoint on both the shop and the front page, mobile nav
+    behaviour, and the gate at 320 px
+  * administration: signing in to wp-admin, listing all 19 editable products,
+    the product editor exposing price/SKU/COA tab, variation rows with editable
+    regular and sale prices, the Payments and Shipping settings screens, and
+    orders created at checkout being visible and manageable
 * **Order verification** — after a browser run, inspect the created orders:
 
 ```bash
@@ -348,8 +362,13 @@ scripts/wp.sh post list --post_type=shop_order --post_status=any --fields=ID,pos
 ### Screenshots for visual review
 
 ```bash
+# WordPress implementation
 docker compose run --rm --entrypoint node e2e tools/capture.js
-# → tests/e2e/screenshots/
+
+# The published reference site, using identical tooling and viewports
+docker compose run --rm --entrypoint node e2e tools/capture-reference.js
+
+# → tests/e2e/screenshots/  (the curated comparison lives in docs/visual-qa/)
 ```
 
 ---

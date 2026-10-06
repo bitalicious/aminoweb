@@ -16,4 +16,9 @@ if [[ ! -d node_modules/@playwright ]]; then
   npm install --no-audit --no-fund --loglevel=error
 fi
 
+# A run that was interrupted can leave artifact directories behind in this
+# bind-mounted folder, which makes the next run fail with
+# "ENOTEMPTY: directory not empty". Clear them first.
+rm -rf test-results/.playwright-artifacts-* 2>/dev/null || true
+
 exec npx playwright test "$@"
