@@ -1,0 +1,29 @@
+/*
+Theme Name: Amino Heaven
+Theme URI: https://github.com/bitalicious/amino-heaven-theme
+Author: Amino Heaven
+Description: Custom WordPress + WooCommerce theme for Amino Heaven — a research-compound storefront selling analytical-grade laboratory reference materials with independent Certificates of Analysis. This is a standalone theme (not a child theme of any third-party theme) converted from the original Lovable/TanStack React storefront. All commerce is handled by WooCommerce using native products, variations, cart, checkout and orders.
+Version: 1.0.0
+Requires at least: 6.6
+Tested up to: 7.1
+Requires PHP: 8.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: amino-heaven
+Tags: e-commerce, custom-logo, custom-menu, featured-images, translation-ready, accessibility-ready, block-styles, wide-blocks, right-sidebar
+
+Amino Heaven WordPress Theme, (C) 2026 Amino Heaven
+Amino Heaven is distributed under the terms of the GNU GPL v2 or later.
+
+------------------------------------------------------------------------------
+Stylesheet loading order
+------------------------------------------------------------------------------
+WordPress requires this file to exist and to carry the header above, but the
+theme's real stylesheet is `assets/css/theme.css`. It is enqueued by
+`inc/enqueue.php` after WordPress, WooCommerce and the active plugins have
+declared their own styles, so the design system always wins the cascade without
+resorting to `!important`.
+
+Nothing below is loaded in the browser; it is kept in place only so the file
+remains a valid, self-describing WordPress stylesheet.
+*/

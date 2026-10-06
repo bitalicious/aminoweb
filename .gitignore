@@ -1,0 +1,60 @@
+# ---------------------------------------------------------------------------
+# Secrets and local configuration — never commit these.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+wp-config.php
+wordpress/wp-config.php
+docker-compose.override.yml
+
+# ---------------------------------------------------------------------------
+# WordPress runtime
+#
+# Core, plugins and uploads are installed by scripts/setup.sh. Only the custom
+# theme and the deployment are version controlled.
+# ---------------------------------------------------------------------------
+/wordpress/*
+!/wordpress/wp-content/
+/wordpress/wp-content/*
+!/wordpress/wp-content/themes/
+/wordpress/wp-content/themes/*
+!/wordpress/wp-content/themes/amino-heaven/
+/wordpress/wp-content/uploads/
+/wordpress/wp-content/upgrade/
+/wordpress/wp-content/cache/
+/wordpress/wp-content/plugins/
+/wordpress/wp-content/mu-plugins/
+/wordpress/wp-content/ai1wm-backups/
+/wordpress/wp-content/debug.log
+/wordpress/wp-content/*.log
+
+# ---------------------------------------------------------------------------
+# Node / tooling
+# ---------------------------------------------------------------------------
+node_modules/
+vendor/
+.pnpm-store/
+.phpstan.cache/
+.phpunit.result.cache
+tests/**/test-results/
+tests/**/playwright-report/
+tests/**/.auth/
+tests/**/*.png
+tests/**/*.webm
+
+# ---------------------------------------------------------------------------
+# OS / editor
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+.tmp/
+tmp/
+*.log

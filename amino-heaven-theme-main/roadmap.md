@@ -1,0 +1,21 @@
+# Storefront update roadmap
+
+- [x] Update promotional ribbon text and animation
+- [x] Replace vial terminology and add marked-down price presentation
+- [x] Update company, shipping, quality, contact, and metadata copy
+- [x] Remove US Warehouse and Cold-Chain Handling content
+- [x] Add the legal compliance statement
+- [x] Hide the Lovable badge
+- [x] Verify desktop and mobile layouts and interactions
+- [x] Populate 21 catalog cards with supplied product data
+- [x] Map uploaded thumbnails and apply 5%/10% tier pricing
+- [x] Remove cap labels and stray vial equivalency text
+- [x] Verify catalog responsiveness and interactions
+- [x] Replace the top vial with the uploaded blank-logo graphic
+- [x] Group GLP2-TR and GLP3-RT strengths into dynamic cards
+- [x] Center and pad all catalog product images
+- [x] Verify variant switching and responsive image fit
+- [x] Match every catalog card title to its bottle label text
+- [x] Re-verify catalog image centering and padding after title changes
+- [x] Add the 21+ research-use entry verification modal
+- [x] Replace catalog tiers with 1, 2, and 5 vial pricing

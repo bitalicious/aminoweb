@@ -1,0 +1,16 @@
+# Normalise text files, keep binaries intact.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.zip binary
+*.woff binary
+*.woff2 binary
+
+# Generated / third-party content that must never be diffed as text.
+package-lock.json -diff linguist-generated
+bun.lock -diff linguist-generated

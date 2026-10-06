@@ -1,0 +1,67 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   Amino Heaven — block editor styles
+   Keeps editor content looking like the front end without leaking front-end
+   layout rules (headers, footers, cards) into the editor canvas.
+   ========================================================================== */
+
+.editor-styles-wrapper {
+	--primary: oklch(0.42 0.112 225);
+	--primary-foreground: oklch(0.99 0.004 220);
+	--foreground: oklch(0.19 0.052 232);
+	--muted-foreground: oklch(0.554 0.046 257.417);
+	--border: oklch(0.86 0.026 225);
+	--accent: oklch(0.94 0.035 220);
+	--background: oklch(0.985 0.006 230);
+	--font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+	--font-display: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-sans);
+	font-size: 15px;
+	line-height: 1.7;
+}
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2 {
+	font-family: var(--font-display);
+	font-weight: 700;
+	line-height: 0.95;
+	text-transform: uppercase;
+}
+
+.editor-styles-wrapper h1 {
+	font-size: 3.2rem;
+}
+
+.editor-styles-wrapper h2 {
+	font-size: 2.6rem;
+}
+
+.editor-styles-wrapper h3 {
+	font-family: var(--font-display);
+	font-size: 22px;
+	text-transform: uppercase;
+}
+
+.editor-styles-wrapper a {
+	color: var(--primary);
+}
+
+.editor-styles-wrapper blockquote {
+	border-left: 3px solid var(--primary);
+	padding-left: 18px;
+	color: var(--muted-foreground);
+}
+
+.editor-styles-wrapper table {
+	border-collapse: collapse;
+}
+
+.editor-styles-wrapper th,
+.editor-styles-wrapper td {
+	border: 1px solid var(--border);
+	padding: 10px 12px;
+}

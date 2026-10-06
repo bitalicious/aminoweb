@@ -1,0 +1,358 @@
+{
+  "schema": 1,
+  "description": "Amino Heaven catalog seed. Transcribed from the source Lovable storefront (amino-heaven-theme-main/src/routes/index.tsx). Used once by `wp amino-heaven import-products` to create native WooCommerce variable products; WooCommerce is the source of truth thereafter.",
+  "sourceOrigin": "https://amino-heaven-theme.lovable.app",
+  "attributes": {
+    "dose": {
+      "slug": "dose",
+      "label": "Strength"
+    },
+    "pack": {
+      "slug": "pack",
+      "label": "Pack Size"
+    }
+  },
+  "pricePolicy": {
+    "note": "The source storefront derives every displayed price from the 1-vial unit price. listPriceFactor produces the struck-through 'sitewide sale' price (the source multiplies the selling price by 1.3); tiers apply the bulk discount for 2 and 5 vials. Prices are rounded to 2 decimals the same way the source's Math.round(x * 100) / 100 does. The resulting values are written as WooCommerce regular/sale variation prices, so the cart total is always recalculated by WooCommerce.",
+    "listPriceFactor": 1.3,
+    "tiers": [
+      {
+        "pack": "1 Vial",
+        "count": 1,
+        "factor": 1.0,
+        "label": "1 Vial"
+      },
+      {
+        "pack": "2 Vials",
+        "count": 2,
+        "factor": 0.95,
+        "label": "2 Vials"
+      },
+      {
+        "pack": "5 Vials",
+        "count": 5,
+        "factor": 0.85,
+        "label": "5 Vials"
+      }
+    ]
+  },
+  "categories": [
+    {
+      "slug": "research-peptides",
+      "name": "Research Peptides",
+      "parent": "",
+      "description": "Analytical-grade research peptides supplied for in vitro laboratory analysis."
+    },
+    {
+      "slug": "peptide-blends",
+      "name": "Peptide Blends",
+      "parent": "research-peptides",
+      "description": "Multi-compound research blends supplied as a single vial."
+    },
+    {
+      "slug": "glp-research",
+      "name": "GLP Research",
+      "parent": "research-peptides",
+      "description": "GLP-class research compounds supplied for laboratory analysis."
+    }
+  ],
+  "products": [
+    {
+      "name": "BPC-157/TB-500",
+      "slug": "bpc-157-tb-500",
+      "sku": "AH-BPC-157-TB-500",
+      "category": "peptide-blends",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "5mg/5mg",
+          "unitPrice": 49.95,
+          "image": "BPC157_TB500_5mg_5mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/94efa2c2-5d51-4bf0-b8d6-5a1cba26ae92/BPC157_TB500_5mg_5mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "BPC-157",
+      "slug": "bpc-157",
+      "sku": "AH-BPC-157",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 49.95,
+          "image": "BPC-157_10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/b7d6b0df-2718-4379-8da9-8276b2f3f178/BPC-157_10mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "CJC-1295 (No DAC) IPAMORELIN",
+      "slug": "cjc-1295-no-dac-ipamorelin",
+      "sku": "AH-CJC-1295-NO-DAC-IPAMORELIN",
+      "category": "peptide-blends",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "5mg/5mg",
+          "unitPrice": 49.95,
+          "image": "CJC1295NoDACIPAMORELIN5mg_5mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/d08335a4-ad7e-46a2-8bf7-7ffee7664bf0/CJC1295NoDACIPAMORELIN5mg_5mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "CJC-1295 (No DAC)",
+      "slug": "cjc-1295-no-dac",
+      "sku": "AH-CJC-1295-NO-DAC",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 49.95,
+          "image": "CJC1295NoDAC.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/7026bf56-1e69-4acb-9b25-5dd769e65c4f/CJC1295NoDAC.webp"
+        }
+      ]
+    },
+    {
+      "name": "GLP1-SM",
+      "slug": "glp1-sm",
+      "sku": "AH-GLP1-SM",
+      "category": "glp-research",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 49.95,
+          "image": "GLP1-SM10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/cc860669-af0d-48d7-bdb3-d374f70a1056/GLP1-SM10mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "GLP2-TR",
+      "slug": "glp2-tr",
+      "sku": "AH-GLP2-TR",
+      "category": "glp-research",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 49.95,
+          "image": "GLP2-TR10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/26b08955-eae8-4397-80c8-76ca61025170/GLP2-TR10mg.webp"
+        },
+        {
+          "dose": "60mg",
+          "unitPrice": 199.95,
+          "image": "GLP2-TR60mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/e265fcf6-74a1-45d5-aab2-3e58c39aa13f/GLP2-TR60mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "GLP3-RT",
+      "slug": "glp3-rt",
+      "sku": "AH-GLP3-RT",
+      "category": "glp-research",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 69.95,
+          "image": "GLP3-RT10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/226ec0ad-6f60-47c9-a1ea-72fdb4a46b02/GLP3-RT10mg.webp"
+        },
+        {
+          "dose": "60mg",
+          "unitPrice": 249.95,
+          "image": "GLP3-RT60mg.png",
+          "imageUrl": ""
+        }
+      ]
+    },
+    {
+      "name": "GHK-CU",
+      "slug": "ghk-cu",
+      "sku": "AH-GHK-CU",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "100mg",
+          "unitPrice": 44.95,
+          "image": "GHK-CU100mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/7c37731d-4ddd-4cdb-b289-8204c3e89f3e/GHK-CU100mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "GLOW",
+      "slug": "glow",
+      "sku": "AH-GLOW",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "70mg",
+          "unitPrice": 99.95,
+          "image": "Glow70mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/f19c8ae3-46c4-4669-9061-aa49a24edeb7/Glow70mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "IPAMORELIN",
+      "slug": "ipamorelin",
+      "sku": "AH-IPAMORELIN",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 49.95,
+          "image": "Ipamorelin10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/d5eb710f-bc00-4f8b-a0c6-c514faefdded/Ipamorelin10mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "KLOW",
+      "slug": "klow",
+      "sku": "AH-KLOW",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "80mg",
+          "unitPrice": 109.95,
+          "image": "KLOW80mg.png",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/5e452b4e-3c90-447e-8cdf-ffc76da85456/KLOW80mg.png"
+        }
+      ]
+    },
+    {
+      "name": "KPV",
+      "slug": "kpv",
+      "sku": "AH-KPV",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 45.95,
+          "image": "KPV10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/00cc8c83-f40b-413b-b5be-5dbe7f9f6fda/KPV10mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "MELANOTAN II",
+      "slug": "melanotan-ii",
+      "sku": "AH-MELANOTAN-II",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 39.95,
+          "image": "Melanotanll10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/03395b60-e453-4ab3-9db6-e1fc58877dfc/Melanotanll10mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "MOTS-c",
+      "slug": "mots-c",
+      "sku": "AH-MOTS-C",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "40mg",
+          "unitPrice": 134.95,
+          "image": "motsc40mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/a83f0fc0-19d9-4642-92d8-3048aaccaa63/motsc40mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "NAD+",
+      "slug": "nad",
+      "sku": "AH-NAD",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "1000mg",
+          "unitPrice": 64.95,
+          "image": "Nad_1000mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/90f78123-6939-42de-8ee4-e6ab730badab/Nad_1000mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "PT-141",
+      "slug": "pt-141",
+      "sku": "AH-PT-141",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 39.95,
+          "image": "pt14110mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/3306f4ab-3bba-4d3a-92b4-7b8baa01706d/pt14110mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "SERMORELIN",
+      "slug": "sermorelin",
+      "sku": "AH-SERMORELIN",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "5mg",
+          "unitPrice": 39.95,
+          "image": "SERMORELIN5mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/400279dd-2976-46dc-bf28-18ace63854c1/SERMORELIN5mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "TB-500",
+      "slug": "tb-500",
+      "sku": "AH-TB-500",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 39.95,
+          "image": "TB-50010mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/834aeb4b-6ee9-484f-9b0b-6cef800c371c/TB-50010mg.webp"
+        }
+      ]
+    },
+    {
+      "name": "Tesamorelin",
+      "slug": "tesamorelin",
+      "sku": "AH-TESAMORELIN",
+      "category": "research-peptides",
+      "featured": true,
+      "doses": [
+        {
+          "dose": "10mg",
+          "unitPrice": 59.95,
+          "image": "Tesa10mg.webp",
+          "imageUrl": "https://amino-heaven-theme.lovable.app/__l5e/assets-v1/49cee3fa-81f4-4c59-9cb8-6c95976fb0b8/Tesa10mg.webp"
+        }
+      ]
+    }
+  ]
+}

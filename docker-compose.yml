@@ -1,0 +1,132 @@
+# Docker Compose stack for the Amino Heaven WordPress + WooCommerce store.
+#
+#   docker compose up -d          start MariaDB + WordPress
+#   scripts/wp.sh <args>          run WP-CLI against the stack
+#   scripts/setup.sh              one-shot install/configure/seed
+#
+# Versions are pinned deliberately. See WORDPRESS-MIGRATION-PLAN.md for the
+# compatibility rationale.
+name: amino-heaven
+
+services:
+  db:
+    image: mariadb:11.8
+    container_name: amino-heaven-db
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:-amino_heaven}
+      MARIADB_USER: ${DB_USER:-amino_heaven}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 20s
+    ports:
+      # Exposed for local inspection with a database client; not required by WordPress.
+      - "${DB_PORT:-3307}:3306"
+
+  wordpress:
+    image: wordpress:7.1.2-php8.3-apache
+    container_name: amino-heaven-web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME:-amino_heaven}
+      WORDPRESS_DB_USER: ${DB_USER:-amino_heaven}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      WORDPRESS_TABLE_PREFIX: ${DB_PREFIX:-wp_}
+      WORDPRESS_DEBUG: "1"
+      WP_HOME: ${WP_URL:-http://localhost:8080}
+      WP_SITEURL: ${WP_URL:-http://localhost:8080}
+      # Appended to the generated wp-config.php on first boot.
+      # NOTE: WP_DEBUG itself comes from WORDPRESS_DEBUG above — redefining it
+      # here would raise "Constant already defined" notices.
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', getenv('WP_HOME'));
+        define('WP_SITEURL', getenv('WP_SITEURL'));
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        @ini_set('display_errors', '0');
+        define('SCRIPT_DEBUG', true);
+        define('WP_POST_REVISIONS', 5);
+        define('DISALLOW_FILE_EDIT', true);
+        define('AUTOMATIC_UPDATER_DISABLED', true);
+        define('WP_AUTO_UPDATE_CORE', false);
+        define('FS_METHOD', 'direct');
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/zz-amino-heaven-uploads.ini:ro
+    ports:
+      - "${WP_PORT:-8080}:80"
+
+  # WP-CLI sidecar. Shares the WordPress volume so `wp` sees the live install.
+  #   docker compose run --rm cli plugin list
+  cli:
+    image: wordpress:cli-2.12.0-php8.3
+    container_name: amino-heaven-cli
+    depends_on:
+      db:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME:-amino_heaven}
+      WORDPRESS_DB_USER: ${DB_USER:-amino_heaven}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      WORDPRESS_TABLE_PREFIX: ${DB_PREFIX:-wp_}
+      WP_CLI_ALLOW_ROOT: "1"
+      WP_CLI_CACHE_DIR: /tmp/wp-cli-cache
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./scripts:/scripts:ro
+      # Source imagery for `wp amino-heaven import-products`. Read-only: the
+      # importer copies these into the WordPress media library.
+      - ./assets-source:/seed-assets:ro
+      # Test scripts executed with `wp eval-file` (see scripts/test.sh).
+      - ./tests:/tests:ro
+    working_dir: /var/www/html
+    entrypoint: ["wp"]
+    # Kept out of `docker compose up` (it has nothing to do once started);
+    # invoke on demand with `docker compose run --rm cli ...` or scripts/wp.sh.
+    profiles: ["tools"]
+
+  # Browser end-to-end tests (Playwright).
+  #   docker compose run --rm e2e
+  #   docker compose run --rm e2e --grep "checkout"
+  #
+  # Uses host networking on purpose. The browser must resolve the same origin the
+  # site advertises in WP_HOME, because every stylesheet, script and image URL is
+  # absolute; reaching WordPress over a compose alias instead would leave the
+  # page HTML loading but all of its sub-resources refused.
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.49.1-noble
+    container_name: amino-heaven-e2e
+    network_mode: host
+    depends_on:
+      wordpress:
+        condition: service_started
+    environment:
+      BASE_URL: ${WP_URL:-http://localhost:8080}
+      CI: "1"
+    volumes:
+      - ./tests/e2e:/e2e
+    working_dir: /e2e
+    entrypoint: ["/e2e/run.sh"]
+    profiles: ["tools"]
+
+volumes:
+  db-data:
+    name: amino-heaven-db-data
