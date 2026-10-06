@@ -263,6 +263,61 @@ async function selectShipping(page, label) {
   throw new Error(`No shipping method matching ${label}`);
 }
 
+
+/**
+ * Place a complete order through the storefront checkout.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {{productPath: string, pack: string, gatewayId: string, email?: string}} options
+ * @returns {Promise<{orderNumber: string, subtotal: number, shipping: number, total: number}>}
+ */
+async function placeOrder(page, options) {
+  const email = options.email || `${options.gatewayId}.${Date.now()}@example.com`;
+
+  await emptyCart(page);
+  await addProductFromSinglePage(page, options.productPath, { pack: options.pack });
+
+  await page.goto('/checkout/', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('#order_review')).toBeVisible();
+
+  await fillCheckoutBilling(page, email);
+
+  const shippingLabel = await selectShipping(page, /flat rate/i);
+  const shipping = money(await page.locator('.woocommerce-shipping-totals .amount').first().innerText());
+
+  const gateway = page.locator(`#payment_method_${options.gatewayId}`);
+  await expect(gateway).toBeVisible();
+  await gateway.check();
+
+  const terms = page.locator('#terms');
+
+  if ((await terms.count()) > 0) {
+    await terms.check();
+  }
+
+  const subtotal = money(await page.locator('.cart-subtotal .amount').last().innerText());
+  const total = money(await page.locator('.order-total .amount').last().innerText());
+
+  await Promise.all([
+    page.waitForLoadState('domcontentloaded'),
+    page.click('#place_order'),
+  ]);
+
+  await expect(page.locator('.woocommerce-order')).toBeVisible();
+
+  const orderNumber = (await page.locator('.woocommerce-order-overview__order strong').innerText()).trim();
+  const confirmationTotal = money(await page.locator('.woocommerce-order-overview__total .amount').innerText());
+
+  return {
+    orderNumber,
+    subtotal,
+    shipping,
+    shippingLabel,
+    total,
+    confirmationTotal,
+  };
+}
+
 module.exports = {
   money,
   cardFor,
@@ -273,4 +328,5 @@ module.exports = {
   addProductFromSinglePage,
   fillCheckoutBilling,
   selectShipping,
+  placeOrder,
 };

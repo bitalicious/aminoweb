@@ -132,13 +132,50 @@ log "Configuring permalinks"
 wp rewrite structure '/%postname%/' >/dev/null
 wp rewrite flush >/dev/null
 
-# WP-CLI refuses to write .htaccess here ("requires special configuration"), so
-# write WordPress's canonical rewrite block with WordPress's own helper. Apache
-# runs with AllowOverride All, so this is all pretty permalinks need.
-if wp eval 'require_once ABSPATH . "wp-admin/includes/misc.php"; require_once ABSPATH . "wp-admin/includes/file.php"; save_mod_rewrite_rules();' >/dev/null 2>&1; then
+# Pretty permalinks need a .htaccess rewrite block (Apache runs this stack with
+# AllowOverride All). WordPress's own save_mod_rewrite_rules() refuses to act when
+# it cannot detect Apache, and WP-CLI never sets $_SERVER['SERVER_SOFTWARE'], so
+# present ourselves as Apache first. A bash fallback writes the same canonical
+# block if WordPress still declines, so a fresh clone always gets working URLs.
+htaccess_ok=0
+
+if wp eval '
+	$_SERVER["SERVER_SOFTWARE"] = "Apache/2.4";
+	require_once ABSPATH . "wp-admin/includes/misc.php";
+	require_once ABSPATH . "wp-admin/includes/file.php";
+	exit( save_mod_rewrite_rules() ? 0 : 1 );
+' >/dev/null 2>&1; then
+  htaccess_ok=1
+fi
+
+# Only ever write the fallback when there is no WordPress block yet, so a
+# hand-edited .htaccess (or one WordPress wrote itself) is never clobbered.
+if grep -q "BEGIN WordPress" wordpress/.htaccess 2>/dev/null; then
+  echo "    .htaccess rewrite rules already in place"
+elif [[ "$htaccess_ok" != "1" ]]; then
+  # Derive RewriteBase from WP_URL so subdirectory installs work too.
+  base_path="$(printf '%s' "$WP_URL" | sed -E 's#^https?://[^/]+##')"
+  [[ -z "$base_path" ]] && base_path="/"
+  [[ "$base_path" != */ ]] && base_path="${base_path}/"
+
+  cat > wordpress/.htaccess <<HTACCESS
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase ${base_path}
+RewriteRule ^index\\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . ${base_path}index.php [L]
+</IfModule>
+# END WordPress
+HTACCESS
   echo "    wrote .htaccess rewrite rules"
-else
-  warn "could not write .htaccess; permalinks may need to be re-saved from wp-admin"
+fi
+
+if ! grep -q "BEGIN WordPress" wordpress/.htaccess 2>/dev/null; then
+  warn "could not write wordpress/.htaccess — pretty permalinks will 404 until it exists"
 fi
 
 # ---------------------------------------------------------------------------

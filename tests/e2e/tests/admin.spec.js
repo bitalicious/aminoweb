@@ -7,6 +7,7 @@
  * Requires WP_ADMIN_USER and WP_ADMIN_PASSWORD (see .env).
  */
 const { test, expect } = require('@playwright/test');
+const { placeOrder } = require('./helpers');
 
 const ADMIN_USER = process.env.WP_ADMIN_USER || 'admin';
 const ADMIN_PASSWORD = process.env.WP_ADMIN_PASSWORD || '';
@@ -81,16 +82,31 @@ test.describe('Store administration', () => {
     await page.locator('#the-list tr .row-title').first().click();
     await expect(page.locator('form#post')).toBeVisible();
 
-    // Open the Variations panel and wait for its rows.
-    await page.locator('a[href="#variable_product_options"]').first().click();
     await expect(page.locator('#variable_product_options')).toBeAttached();
 
     // Each of the three vial packs is an editable variation with its own regular
     // and sale price — this is exactly how the store owner changes tier pricing.
+    const tab = page.locator('a[href="#variable_product_options"]').first();
     const regularInputs = page.locator('#variable_product_options input[name*="_regular_price"]');
     const saleInputs = page.locator('#variable_product_options input[name*="_sale_price"]');
 
-    await expect.poll(async () => regularInputs.count(), { timeout: 25_000 }).toBeGreaterThanOrEqual(3);
+    // WooCommerce renders the variation rows when its admin script binds the tab
+    // handler, which can land after the page reports itself loaded. Clicking again
+    // on each poll iteration makes this deterministic instead of timing-dependent.
+    await expect.poll(
+      async () => {
+        if ((await regularInputs.count()) >= 3) {
+          return 3;
+        }
+
+        await tab.click({ timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(800);
+
+        return regularInputs.count();
+      },
+      { timeout: 40_000, intervals: [1000] }
+    ).toBeGreaterThanOrEqual(3);
+
     expect(await saleInputs.count()).toBeGreaterThanOrEqual(3);
 
     const body = await page.locator('body').innerText();
@@ -133,6 +149,15 @@ test.describe('Store administration', () => {
   });
 
   test('orders created at checkout are visible and manageable', async ({ page }) => {
+    // Place an order first so this check never depends on another spec having
+    // run (Playwright executes specs in alphabetical order).
+    await placeOrder(page, {
+      productPath: '/product/tb-500/',
+      pack: '1 Vial',
+      gatewayId: 'cod',
+      email: `admin.check.${Date.now()}@example.com`,
+    });
+
     await login(page);
 
     await page.goto('/wp-admin/edit.php?post_type=shop_order', { waitUntil: 'domcontentloaded' });

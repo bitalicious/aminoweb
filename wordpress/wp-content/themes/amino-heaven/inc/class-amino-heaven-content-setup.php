@@ -65,6 +65,7 @@ class Amino_Heaven_Content_Setup {
 
 		$this->assign_front_page( $pages );
 		$this->assign_privacy_page();
+		$this->assign_terms_page( $pages );
 		$this->create_menus( $pages );
 		$this->set_site_icon();
 		$this->clean_default_widgets();
@@ -416,6 +417,29 @@ class Amino_Heaven_Content_Setup {
 			update_option( 'page_on_front', $home_id );
 			$this->note( 'Assigned the Home page as the front page' );
 		}
+	}
+
+	/**
+	 * Point WooCommerce's checkout at the research-use terms page.
+	 *
+	 * This has to happen after the page exists: `setup-store` also tries, but on a
+	 * fresh install it runs before this command has created the page.
+	 *
+	 * @param array<string,int> $pages Slug => post id.
+	 */
+	private function assign_terms_page( $pages ) {
+		if ( empty( $pages['research-use-terms'] ) ) {
+			return;
+		}
+
+		$terms_id = (int) $pages['research-use-terms'];
+
+		if ( (int) get_option( 'woocommerce_terms_page_id' ) === $terms_id ) {
+			return;
+		}
+
+		update_option( 'woocommerce_terms_page_id', $terms_id );
+		$this->note( 'Assigned the Research Use & Terms page to WooCommerce checkout' );
 	}
 
 	/**
